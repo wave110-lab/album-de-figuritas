@@ -70,3 +70,4 @@ Puedes acceder a la versión web desplegada directamente en el navegador:
 ├── index.html   # Aplicación web completa (HTML, CSS y JS integrado)
 └── README.md    # Documentación y guía del proyecto
 ```
+PROMPTS: https://share.gemini.google/prPMrWDTnXFr
