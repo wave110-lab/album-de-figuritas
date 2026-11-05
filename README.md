@@ -1,3 +1,5 @@
+## 'https://wave110-lab.github.io/album-de-figuritas/'
+
 # 🎴 Álbum Digital Pro 2026 - Colección Legendaria
 
 Un álbum interactivo de figuritas (cromos/stickers) digitales desarrollado como una aplicación web moderna, estética y responsiva. Ofrece apertura de sobres en 3D, animación de cartas holográficas, sistema de gestión de repetidas y persistencia de datos mediante una base de datos local JSON (`localStorage`).
@@ -48,8 +50,7 @@ Existen dos formas simples de revisar y calificar la aplicación:
 
 ### Opción A: Demostración en Vivo (GitHub Pages)
 Puedes acceder a la versión web desplegada directamente en el navegador:
-👉 `https://TU-USUARIO.github.io/album-de-figuritas/`
-
+👉 https://wave110-lab.github.io/album-de-figuritas/
 ### Opción B: Ejecución Local
 1. Haz clic en el botón **Code** > **Download ZIP** en este repositorio.
 2. Descomprime el archivo `.zip` en tu computadora.
