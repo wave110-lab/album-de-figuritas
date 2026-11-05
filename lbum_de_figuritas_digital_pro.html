@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Álbum Digital Pro - Colección Legendaria</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-gradient-dark: radial-gradient(circle at 50% 0%, #172033 0%, #090d16 75%);
+      --bg-gradient-light: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #e2e8f0 100%);
+      --panel-dark: rgba(18, 26, 43, 0.85);
+      --panel-light: rgba(255, 255, 255, 0.85);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --border-light: rgba(0, 0, 0, 0.08);
+      --card-bg-dark: #0f172a;
+      --card-bg-light: #ffffff;
+      --text-muted-dark: #94a3b8;
+      --text-muted-light: #64748b;
+    }
+
+    [data-bs-theme="dark"] body {
+      background: var(--bg-gradient-dark);
+      color: #e2e8f0;
+    }
+
+    [data-bs-theme="light"] body {
+      background: var(--bg-gradient-light);
+      color: #0f172a;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .font-brand {
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    /* Glassmorphism Panels */
+    [data-bs-theme="dark"] .glass-card {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+    }
+    [data-bs-theme="light"] .glass-card {
+      background: var(--panel-light);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    .glass-card {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    [data-bs-theme="dark"] .glass-nav {
+      background: rgba(11, 17, 30, 0.9);
+      border-bottom: 1px solid var(--border-dark);
+    }
+    [data-bs-theme="light"] .glass-nav {
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .glass-nav {
+      backdrop-filter: blur(20px);
+    }
+
+    /* Custom Navigation Tabs */
+    .nav-pills-custom .nav-link {
+      font-weight: 600;
+      border-radius: 0.75rem;
+      padding: 0.6rem 1.2rem;
+      transition: all 0.2s ease;
+    }
+    [data-bs-theme="dark"] .nav-pills-custom .nav-link { color: #94a3b8; }
+    [data-bs-theme="light"] .nav-pills-custom .nav-link { color: #475569; }
+
+    .nav-pills-custom .nav-link.active {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: #ffffff !important;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+    }
+
+    /* Sticker Cards Visual */
+    .sticker-card {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    [data-bs-theme="dark"] .sticker-card { background: var(--card-bg-dark); border: 1px solid var(--border-dark); }
+    [data-bs-theme="light"] .sticker-card { background: var(--card-bg-light); border: 1px solid var(--border-light); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+    .sticker-card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Rarity Glows */
+    .rarity-common { border-color: #94a3b8 !important; }
+    .rarity-rare { border-color: #3b82f6 !important; }
+    .rarity-epic { border-color: #a855f7 !important; }
+    .rarity-legendary { border-color: #f59e0b !important; }
+
+    /* Empty Slot */
+    .empty-slot {
+      border: 2px dashed rgba(148, 163, 184, 0.25);
+      border-radius: 1rem;
+      min-height: 280px;
+      transition: all 0.3s ease;
+    }
+    [data-bs-theme="dark"] .empty-slot { background: rgba(15, 23, 42, 0.4); }
+    [data-bs-theme="light"] .empty-slot { background: rgba(241, 245, 249, 0.7); }
+
+    /* Pack 3D */
+    .pack-3d {
+      width: 220px;
+      height: 330px;
+      background: linear-gradient(145deg, #4f46e5, #7c3aed, #f59e0b);
+      border-radius: 1.5rem;
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .pack-3d:hover { transform: scale(1.05) rotate(1deg); }
+
+    .pack-rip-anim {
+      animation: packRip 0.6s ease-in forwards;
+    }
+
+    @keyframes packRip {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1) rotate(-5deg); opacity: 0.8; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    .progress-bar-glow {
+      background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #f59e0b 100%);
+    }
+
+    .avatar-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN / REGISTER MODAL -->
+  <div class="modal fade" id="authModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card p-3 border-0">
+        <div class="modal-header border-0 pb-0">
+          <h4 class="modal-title font-brand font-extrabold text-primary mb-0" id="authModalTitle">
+            <i class="fa-solid fa-book-open me-2"></i>Iniciar Sesión
+          </h4>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary small mb-4">Ingresa tu usuario para guardar tu progreso del álbum.</p>
+          <form id="authForm" onsubmit="handleAuthSubmit(event)">
+            <div class="mb-3">
+              <label class="form-label font-semibold small">Nombre de Usuario</label>
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="fa-solid fa-user"></i></span>
+                <input type="text" id="authUsername" class="form-control" placeholder="Ej. Coleccionista99" required minlength="3">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label font-semibold small">Contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="fa-solid fa-lock"></i></span>
+                <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required minlength="4">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 font-brand font-bold py-2 rounded-3 shadow mt-2">
+              Ingresar al Álbum
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR & STATS -->
+  <header class="glass-nav sticky-top z-3 px-3 py-2">
+    <div class="container-fluid max-w-7xl">
+      <div class="row align-items-center gy-2">
+        
+        <!-- Brand Title -->
+        <div class="col-12 col-md-4 d-flex align-items-center gap-3">
+          <div class="rounded-3 bg-warning text-dark px-3 py-2 font-brand font-extrabold fs-4 shadow-sm">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <div>
+            <h1 class="font-brand fs-4 mb-0 font-extrabold">PRO STICKERS</h1>
+            <small class="text-secondary">Álbum Digital 2026</small>
+          </div>
+        </div>
+
+        <!-- Progress Stats -->
+        <div class="col-12 col-md-4">
+          <div class="glass-card p-2 px-3">
+            <div class="d-flex justify-content-between text-xs font-bold mb-1">
+              <span class="text-secondary">PROGRESO DEL ÁLBUM</span>
+              <span id="completion-text" class="text-warning">0% (0/24)</span>
+            </div>
+            <div class="progress bg-secondary bg-opacity-20" style="height: 8px;">
+              <div id="completion-bar" class="progress-bar progress-bar-glow" role="progressbar" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls: User Info + Theme Toggle -->
+        <div class="col-12 col-md-4 d-flex justify-content-md-end align-items-center gap-2">
+          
+          <!-- Theme Switcher -->
+          <button class="btn btn-outline-secondary btn-sm rounded-circle p-2" onclick="toggleTheme()" title="Cambiar Tema">
+            <i id="theme-icon" class="fa-solid fa-moon"></i>
+          </button>
+
+          <!-- Sobres Counter -->
+          <div class="glass-card px-3 py-1 text-center">
+            <small class="text-secondary text-xs d-block">SOBRES</small>
+            <span id="stat-packs-count" class="font-brand text-warning font-bold">0</span>
+          </div>
+
+          <!-- User Profile Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2 rounded-3" type="button" data-bs-toggle="dropdown">
+              <div id="user-avatar" class="avatar-circle">U</div>
+              <span id="user-display-name" class="font-semibold text-truncate" style="max-width: 100px;">Usuario</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+              <li><a class="dropdown-item text-danger" href="#" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container-fluid max-w-7xl my-4 px-3">
+
+    <!-- Navigation Pills -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <ul class="nav nav-pills nav-pills-custom gap-2">
+        <li class="nav-item">
+          <button class="nav-link active" id="tab-album-btn" onclick="switchView('album')">
+            <i class="fa-solid fa-book me-2"></i>Álbum
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="tab-packs-btn" onclick="switchView('packs')">
+            <i class="fa-solid fa-box-open me-2"></i>Abrir Sobres
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="tab-market-btn" onclick="switchView('market')">
+            <i class="fa-solid fa-repeat me-2"></i>Repetidas
+            <span id="market-badge" class="badge bg-warning text-dark ms-1">0</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="tab-stats-btn" onclick="switchView('stats')">
+            <i class="fa-solid fa-chart-pie me-2"></i>Estadísticas
+          </button>
+        </li>
+      </ul>
+
+      <!-- Category Filter -->
+      <div id="category-filter-wrapper" class="btn-group btn-group-sm">
+        <!-- Generado dinámicamente -->
+      </div>
+    </div>
+
+    <!-- VIEW 1: ALBUM GRID -->
+    <section id="view-album" class="view-section">
+      <div class="glass-card p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <span id="current-cat-tag" class="badge bg-primary text-uppercase mb-1">CATEGORÍA</span>
+          <h2 id="current-cat-title" class="font-brand fs-3 mb-1">Cargando...</h2>
+          <p id="current-cat-desc" class="text-secondary small mb-0">Colecciona las figuritas de esta página.</p>
+        </div>
+        <div class="text-end">
+          <small class="text-secondary d-block">Completado</small>
+          <span id="current-cat-stats" class="font-brand fs-4 text-warning">0 / 6</span>
+        </div>
+      </div>
+
+      <div id="album-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+        <!-- Renderizado dinámico de ranuras del álbum -->
+      </div>
+    </section>
+
+    <!-- VIEW 2: PACK OPENING -->
+    <section id="view-packs" class="view-section d-none">
+      <div class="glass-card p-5 text-center my-4 min-vh-50 d-flex flex-column align-items-center justify-content-center">
+        
+        <div id="pack-interactive-zone" class="text-center">
+          <div class="pack-3d mx-auto mb-4 d-flex flex-column justify-content-between p-4" onclick="executePackOpening()">
+            <div class="d-flex justify-content-between text-white font-bold text-xs">
+              <span>EDICIÓN 2026</span>
+              <span>5 CARDS</span>
+            </div>
+            <div>
+              <i class="fa-solid fa-trophy fs-1 text-white mb-2"></i>
+              <h3 class="font-brand text-white font-extrabold mb-0">SOBRE GOLD</h3>
+              <small class="badge bg-dark text-warning mt-2">¡HAZ CLIC PARA ABRIR!</small>
+            </div>
+            <div class="text-white font-bold text-xs">PRO STICKERS</div>
+          </div>
+          <p class="text-secondary">Abre tu sobre para descubrir 5 cromos nuevos.</p>
+        </div>
+
+        <div id="pack-revealed-zone" class="d-none w-100">
+          <h2 class="font-brand text-warning fs-3 mb-4">¡NUEVAS FIGURITAS REVELADAS!</h2>
+          <div id="revealed-cards-row" class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3 justify-content-center mb-4">
+            <!-- Cards generadas -->
+          </div>
+          <button class="btn btn-warning btn-lg font-brand font-bold px-5 rounded-3 shadow" onclick="resetPackZone()">
+            <i class="fa-solid fa-box-archive me-2"></i>Guardar en la Colección
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 3: MARKET DUPLICATES -->
+    <section id="view-market" class="view-section d-none">
+      <div class="glass-card p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h2 class="font-brand fs-3 mb-1">Mercado de Repetidas</h2>
+          <p class="text-secondary small mb-0">Intercambia 3 figuritas repetidas por 1 sobre nuevo.</p>
+        </div>
+        <button id="btn-recycle-trade" class="btn btn-warning font-bold rounded-3" onclick="DB.recycleDuplicates()">
+          <i class="fa-solid fa-repeat me-2"></i>Intercambiar 3 Repetidas (+1 Sobre)
+        </button>
+      </div>
+
+      <div id="market-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+        <!-- Renderizado de repetidas -->
+      </div>
+
+      <div id="market-empty-msg" class="glass-card p-5 text-center d-none">
+        <i class="fa-solid fa-boxes-packing fs-1 text-secondary mb-3"></i>
+        <h4 class="text-secondary">Sin figuritas repetidas por ahora.</h4>
+        <p class="text-muted small">Abre más sobres para juntar repetidas e intercambiarlas.</p>
+      </div>
+    </section>
+
+    <!-- VIEW 4: STATS & DB -->
+    <section id="view-stats" class="view-section d-none">
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <div class="glass-card p-4 text-center">
+            <i class="fa-solid fa-database text-primary fs-1 mb-2"></i>
+            <h5 class="text-secondary">Guardado Local</h5>
+            <h2 id="db-status-size" class="font-brand">0 KB</h2>
+            <small class="text-muted">Espacio usado en el navegador</small>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="glass-card p-4 text-center">
+            <i class="fa-solid fa-layer-group text-warning fs-1 mb-2"></i>
+            <h5 class="text-secondary">Repetidas</h5>
+            <h2 id="db-duplicates-count" class="font-brand text-warning">0</h2>
+            <small class="text-muted">En tu inventario</small>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="glass-card p-4 text-center">
+            <i class="fa-solid fa-award text-success fs-1 mb-2"></i>
+            <h5 class="text-secondary">Leyendas Pegadas</h5>
+            <h2 id="db-legendary-count" class="font-brand text-success">0</h2>
+            <small class="text-muted">Cromos dorados foil</small>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="font-brand mb-0"><i class="fa-solid fa-code me-2"></i>Estado JSON de la Sesión</h4>
+              <button class="btn btn-outline-danger btn-sm rounded-3" onclick="DB.resetDB()">
+                <i class="fa-solid fa-rotate-right me-1"></i>Reiniciar Datos del Usuario
+              </button>
+            </div>
+            <pre id="json-db-inspector" class="bg-dark p-3 rounded-3 text-success text-xs overflow-auto" style="max-height: 250px;"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3 z-3">
+    <div id="action-toast" class="toast align-items-center border-secondary" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2">
+          <i id="toast-icon" class="fa-solid fa-circle-check text-success"></i>
+          <span id="toast-message">Notificación del sistema</span>
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* ==========================================================================
+       1. DATA SCHEMA & SAMPLE CARDS DATABASE
+       ========================================================================== */
+    const STICKERS_DATA = [
+      // LEYENDAS
+      { id: 1, name: "Pelé", categoryId: "leyendas", number: 1, rarity: "legendary", position: "Delantero", country: "Brasil", stat: "1281 Goles", img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=400&q=80" },
+      { id: 2, name: "Diego Maradona", categoryId: "leyendas", number: 2, rarity: "legendary", position: "Mediocentro", country: "Argentina", stat: "El Pibe de Oro", img: "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=400&q=80" },
+      { id: 3, name: "Johan Cruyff", categoryId: "leyendas", number: 3, rarity: "epic", position: "Atacante", country: "Países Bajos", stat: "Fútbol Total", img: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=400&q=80" },
+      { id: 4, name: "Zinedine Zidane", categoryId: "leyendas", number: 4, rarity: "epic", position: "Mediocampista", country: "Francia", stat: "Magia Pura", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=400&q=80" },
+      { id: 5, name: "Ronaldinho", categoryId: "leyendas", number: 5, rarity: "rare", position: "Extremo", country: "Brasil", stat: "Joga Bonito", img: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=400&q=80" },
+      { id: 6, name: "Franz Beckenbauer", categoryId: "leyendas", number: 6, rarity: "rare", position: "Defensa", country: "Alemania", stat: "El Káiser", img: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=400&q=80" },
+
+      // ESTRELLAS
+      { id: 7, name: "Lionel Messi", categoryId: "estrellas", number: 7, rarity: "legendary", position: "Delantero", country: "Argentina", stat: "8 Balones de Oro", img: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=400&q=80" },
+      { id: 8, name: "Cristiano Ronaldo", categoryId: "estrellas", number: 8, rarity: "legendary", position: "Delantero", country: "Portugal", stat: "Leyenda del Gol", img: "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?auto=format&fit=crop&w=400&q=80" },
+      { id: 9, name: "Kylian Mbappé", categoryId: "estrellas", number: 9, rarity: "epic", position: "Delantero", country: "Francia", stat: "Velocidad Pura", img: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=400&q=80" },
+      { id: 10, name: "Erling Haaland", categoryId: "estrellas", number: 10, rarity: "epic", position: "Delantero", country: "Noruega", stat: "Cazagoles", img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=400&q=80" },
+      { id: 11, name: "Jude Bellingham", categoryId: "estrellas", number: 11, rarity: "rare", position: "Volante", country: "Inglaterra", stat: "Estrella Joven", img: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=400&q=80" },
+      { id: 12, name: "Kevin De Bruyne", categoryId: "estrellas", number: 12, rarity: "rare", position: "Mediocampista", country: "Bélgica", stat: "Asistidor Top", img: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=400&q=80" },
+
+      // ESTADIOS
+      { id: 13, name: "Maracaná", categoryId: "estadios", number: 13, rarity: "epic", position: "Río de Janeiro", country: "Brasil", stat: "78,838 Asientos", img: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=400&q=80" },
+      { id: 14, name: "Santiago Bernabéu", categoryId: "estadios", number: 14, rarity: "rare", position: "Madrid", country: "España", stat: "Templo Blanco", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=400&q=80" },
+      { id: 15, name: "Camp Nou", categoryId: "estadios", number: 15, rarity: "rare", position: "Barcelona", country: "España", stat: "Feudo Culé", img: "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=400&q=80" },
+      { id: 16, name: "Wembley Stadium", categoryId: "estadios", number: 16, rarity: "common", position: "Londres", country: "Inglaterra", stat: "Catedral del Fútbol", img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=400&q=80" },
+      { id: 17, name: "La Bombonera", categoryId: "estadios", number: 17, rarity: "common", position: "Buenos Aires", country: "Argentina", stat: "Mítica Pasión", img: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=400&q=80" },
+      { id: 18, name: "San Siro", categoryId: "estadios", number: 18, rarity: "common", position: "Milán", country: "Italia", stat: "Templo Italiano", img: "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?auto=format&fit=crop&w=400&q=80" },
+
+      // MOMENTOS
+      { id: 19, name: "La Mano de Dios 1986", categoryId: "momentos", number: 19, rarity: "legendary", position: "Mundial 1986", country: "Argentina", stat: "Mítica Épica", img: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=400&q=80" },
+      { id: 20, name: "Chile Campeón 2015", categoryId: "momentos", number: 20, rarity: "common", position: "Copa América", country: "Chile", stat: "Primera Estrella", img: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=400&q=80" },
+      { id: 21, name: "Gol de Iniesta 2010", categoryId: "momentos", number: 21, rarity: "epic", position: "Sudáfrica 2010", country: "España", stat: "Gloria Mundial", img: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=400&q=80" },
+      { id: 22, name: "Volea de Zidane 2002", categoryId: "momentos", number: 22, rarity: "rare", position: "Final UCL", country: "Escocia", stat: "Gol del Siglo", img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=400&q=80" },
+      { id: 23, name: "Maracanazo 1950", categoryId: "momentos", number: 23, rarity: "rare", position: "Mundial 1950", country: "Uruguay", stat: "Hazaña Inmortal", img: "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=400&q=80" },
+      { id: 24, name: "Messi Levanta Copa 2022", categoryId: "momentos", number: 24, rarity: "legendary", position: "Catar 2022", country: "Argentina", stat: "La Tercera", img: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=400&q=80" }
+    ];
+
+    const CATEGORIES = [
+      { id: "leyendas", name: "Leyendas", desc: "Jugadores inmortales de la historia del fútbol." },
+      { id: "estrellas", name: "Estrellas Actuales", desc: "Cracks del fútbol contemporáneo." },
+      { id: "estadios", name: "Estadios", desc: "Escenarios y templos emblemáticos." },
+      { id: "momentos", name: "Momentos Épicos", desc: "Hitos y finales inolvidables." }
+    ];
+
+    /* ==========================================================================
+       2. DATABASE & SESSION CONTROLLER (Multi-User LocalStorage)
+       ========================================================================== */
+    const CURRENT_USER_KEY = 'album_current_user_v2';
+
+    class AlbumDatabase {
+      constructor() {
+        this.currentUser = localStorage.getItem(CURRENT_USER_KEY) || null;
+        this.state = {
+          pastedCards: [],
+          inventory: [],
+          packsCount: 3,
+          activeCat: "leyendas"
+        };
+        if (this.currentUser) {
+          this.loadUserSession(this.currentUser);
+        }
+      }
+
+      getUserKey(username) {
+        return `album_user_data_${username.toLowerCase()}`;
+      }
+
+      loadUserSession(username) {
+        this.currentUser = username;
+        localStorage.setItem(CURRENT_USER_KEY, username);
+        const dataStr = localStorage.getItem(this.getUserKey(username));
+        if (dataStr) {
+          try {
+            this.state = JSON.parse(dataStr);
+          } catch (e) {
+            this.resetStateToDefault();
+          }
+        } else {
+          this.resetStateToDefault();
+          this.saveStateOnly();
+        }
+      }
+
+      resetStateToDefault() {
+        this.state = {
+          pastedCards: [],
+          inventory: [],
+          packsCount: 3,
+          activeCat: "leyendas"
+        };
+      }
+
+      saveStateOnly() {
+        if (this.currentUser) {
+          localStorage.setItem(this.getUserKey(this.currentUser), JSON.stringify(this.state));
+        }
+      }
+
+      save() {
+        this.saveStateOnly();
+        updateAllViews();
+      }
+
+      resetDB() {
+        this.resetStateToDefault();
+        this.save();
+        showToast("Progreso del usuario reiniciado", "info");
+      }
+
+      pasteCard(cardId) {
+        const invIdx = this.state.inventory.indexOf(cardId);
+        if (invIdx !== -1) {
+          this.state.inventory.splice(invIdx, 1);
+        }
+        if (!this.state.pastedCards.includes(cardId)) {
+          this.state.pastedCards.push(cardId);
+        }
+        this.save();
+        playSound('paste');
+        showToast("Figurita pegada en tu álbum", "success");
+
+        if (this.state.pastedCards.length === STICKERS_DATA.length) {
+          confetti({ particleCount: 200, spread: 80, origin: { y: 0.5 } });
+          showToast("🏆 ¡FELICIDADES! ¡ÁLBUM COMPLETADO! 🏆", "success");
+        }
+      }
+
+      recycleDuplicates() {
+        if (this.state.inventory.length < 3) {
+          showToast("Necesitas al menos 3 repetidas en inventario", "warning");
+          return;
+        }
+        this.state.inventory.splice(0, 3);
+        this.state.packsCount += 1;
+        this.save();
+        playSound('paste');
+        showToast("Intercambio exitoso: 3 Repetidas -> +1 Sobre", "success");
+      }
+    }
+
+    const DB = new AlbumDatabase();
+
+    /* ==========================================================================
+       3. AUTHENTICATION & THEME LOGIC
+       ========================================================================== */
+    let authModalInstance = null;
+
+    function checkAuth() {
+      if (!DB.currentUser) {
+        if (!authModalInstance) {
+          authModalInstance = new bootstrap.Modal(document.getElementById('authModal'));
+        }
+        authModalInstance.show();
+      } else {
+        updateUserInfo();
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const userVal = document.getElementById('authUsername').value.trim();
+      if (userVal) {
+        DB.loadUserSession(userVal);
+        updateUserInfo();
+        if (authModalInstance) authModalInstance.hide();
+        updateAllViews();
+        showToast(`Bienvenido de nuevo, ${userVal}!`, "success");
+      }
+    }
+
+    function updateUserInfo() {
+      const nameEl = document.getElementById('user-display-name');
+      const avatarEl = document.getElementById('user-avatar');
+      if (DB.currentUser) {
+        nameEl.innerText = DB.currentUser;
+        avatarEl.innerText = DB.currentUser.charAt(0).toUpperCase();
+      }
+    }
+
+    function logoutUser() {
+      localStorage.removeItem(CURRENT_USER_KEY);
+      DB.currentUser = null;
+      checkAuth();
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-bs-theme', nextTheme);
+      
+      const icon = document.getElementById('theme-icon');
+      if (nextTheme === 'light') {
+        icon.className = 'fa-solid fa-sun text-warning';
+      } else {
+        icon.className = 'fa-solid fa-moon text-light';
+      }
+    }
+
+    /* ==========================================================================
+       4. AUDIO SYNTHESIZER
+       ========================================================================== */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'rip') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'paste') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(550, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } else if (type === 'legendary') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(783, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      }
+    }
+
+    /* ==========================================================================
+       5. VIEWS & RENDERING
+       ========================================================================== */
+    function switchView(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('d-none'));
+      document.querySelectorAll('.nav-pills-custom .nav-link').forEach(el => el.classList.remove('active'));
+      
+      const categoryFilterWrapper = document.getElementById('category-filter-wrapper');
+
+      if (viewName === 'album') {
+        document.getElementById('view-album').classList.remove('d-none');
+        document.getElementById('tab-album-btn').classList.add('active');
+        categoryFilterWrapper.classList.remove('d-none');
+      } else if (viewName === 'packs') {
+        document.getElementById('view-packs').classList.remove('d-none');
+        document.getElementById('tab-packs-btn').classList.add('active');
+        categoryFilterWrapper.classList.add('d-none');
+      } else if (viewName === 'market') {
+        document.getElementById('view-market').classList.remove('d-none');
+        document.getElementById('tab-market-btn').classList.add('active');
+        categoryFilterWrapper.classList.add('d-none');
+      } else if (viewName === 'stats') {
+        document.getElementById('view-stats').classList.remove('d-none');
+        document.getElementById('tab-stats-btn').classList.add('active');
+        categoryFilterWrapper.classList.add('d-none');
+      }
+
+      updateAllViews();
+    }
+
+    function updateAllViews() {
+      if (!DB.currentUser) return;
+      renderCategoryFilters();
+      renderAlbumGrid();
+      renderMarketGrid();
+      renderHeaderStats();
+      renderDBStats();
+    }
+
+    function renderCategoryFilters() {
+      const container = document.getElementById('category-filter-wrapper');
+      container.innerHTML = CATEGORIES.map(cat => `
+        <button onclick="changeCategory('${cat.id}')" class="btn btn-outline-secondary ${DB.state.activeCat === cat.id ? 'active' : ''}">
+          ${cat.name}
+        </button>
+      `).join('');
+    }
+
+    function changeCategory(catId) {
+      DB.state.activeCat = catId;
+      DB.save();
+    }
+
+    function renderHeaderStats() {
+      const total = STICKERS_DATA.length;
+      const pasted = DB.state.pastedCards.length;
+      const pct = Math.round((pasted / total) * 100);
+
+      document.getElementById('completion-text').innerText = `${pct}% (${pasted}/${total})`;
+      document.getElementById('completion-bar').style.width = `${pct}%`;
+      document.getElementById('stat-packs-count').innerText = DB.state.packsCount;
+      document.getElementById('market-badge').innerText = DB.state.inventory.length;
+      
+      const recycleBtn = document.getElementById('btn-recycle-trade');
+      if (recycleBtn) recycleBtn.disabled = DB.state.inventory.length < 3;
+    }
+
+    function renderAlbumGrid() {
+      const catObj = CATEGORIES.find(c => c.id === DB.state.activeCat);
+      document.getElementById('current-cat-tag').innerText = catObj.id;
+      document.getElementById('current-cat-title').innerText = catObj.name;
+      document.getElementById('current-cat-desc').innerText = catObj.desc;
+
+      const catCards = STICKERS_DATA.filter(c => c.categoryId === DB.state.activeCat);
+      const pastedInCat = catCards.filter(c => DB.state.pastedCards.includes(c.id)).length;
+      document.getElementById('current-cat-stats').innerText = `${pastedInCat} / ${catCards.length}`;
+
+      const grid = document.getElementById('album-grid');
+      grid.innerHTML = catCards.map(card => {
+        const isPasted = DB.state.pastedCards.includes(card.id);
+        const inInventory = DB.state.inventory.includes(card.id);
+
+        if (isPasted) {
+          return `<div class="col">${createStickerCardHTML(card, { isPasted: true })}</div>`;
+        } else {
+          return `
+            <div class="col">
+              <div class="empty-slot p-3 d-flex flex-column justify-content-between align-items-center text-center">
+                <div class="d-flex justify-content-between w-100 text-xs font-bold text-secondary">
+                  <span>N° ${card.number}</span>
+                  <span class="text-uppercase">${card.rarity}</span>
+                </div>
+                
+                <div class="my-auto">
+                  <div class="rounded-circle bg-secondary bg-opacity-20 p-3 mx-auto mb-2 text-secondary d-flex align-items-center justify-content-center" style="width:48px; height:48px;">
+                    <i class="fa-solid fa-user fs-5"></i>
+                  </div>
+                  <small class="text-secondary font-bold d-block text-uppercase">${card.name}</small>
+                </div>
+
+                ${inInventory ? `
+                  <button onclick="DB.pasteCard(${card.id})" class="btn btn-warning btn-sm w-100 font-bold rounded-3 shadow-sm">
+                    <i class="fa-solid fa-glue me-1"></i> Pegar
+                  </button>
+                ` : `
+                  <span class="badge bg-secondary bg-opacity-20 text-secondary text-xs"><i class="fa-solid fa-lock me-1"></i>Bloqueada</span>
+                `}
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function renderMarketGrid() {
+      const grid = document.getElementById('market-grid');
+      const emptyMsg = document.getElementById('market-empty-msg');
+
+      if (DB.state.inventory.length === 0) {
+        grid.innerHTML = '';
+        emptyMsg.classList.remove('d-none');
+        return;
+      }
+
+      emptyMsg.classList.add('d-none');
+      const counts = {};
+      DB.state.inventory.forEach(id => counts[id] = (counts[id] || 0) + 1);
+
+      grid.innerHTML = Object.keys(counts).map(idStr => {
+        const cardId = parseInt(idStr);
+        const card = STICKERS_DATA.find(c => c.id === cardId);
+        const count = counts[cardId];
+        const canPaste = !DB.state.pastedCards.includes(cardId);
+
+        return `
+          <div class="col">
+            ${createStickerCardHTML(card, {
+              isPasted: false,
+              count: count,
+              canPaste: canPaste
+            })}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDBStats() {
+      const rawStr = JSON.stringify(DB.state, null, 2);
+      const kbSize = (new Blob([rawStr]).size / 1024).toFixed(2);
+      
+      document.getElementById('db-status-size').innerText = `${kbSize} KB`;
+      document.getElementById('db-duplicates-count').innerText = DB.state.inventory.length;
+      
+      const legendaryPasted = DB.state.pastedCards.filter(id => {
+        const c = STICKERS_DATA.find(x => x.id === id);
+        return c && c.rarity === 'legendary';
+      }).length;
+      document.getElementById('db-legendary-count').innerText = legendaryPasted;
+
+      document.getElementById('json-db-inspector').innerText = rawStr;
+    }
+
+    function createStickerCardHTML(card, opts = {}) {
+      return `
+        <div class="sticker-card rarity-${card.rarity} p-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-warning font-bold text-xs">N° ${card.number}</span>
+            <span class="badge ${card.rarity === 'legendary' ? 'bg-warning text-dark' : 'bg-secondary bg-opacity-20 text-body'} text-uppercase text-xs">${card.rarity}</span>
+          </div>
+
+          <div class="my-2 rounded-3 overflow-hidden bg-secondary bg-opacity-10 position-relative" style="height: 120px;">
+            <img src="${card.img}" alt="${card.name}" class="w-100 h-100 object-fit-cover" onerror="this.src='https://placehold.co/400x300/1e293b/94a3b8?text=${card.name}'">
+            <div class="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-65 p-1 text-center">
+              <small class="text-white text-xs font-semibold">${card.country}</small>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <h6 class="font-brand font-bold mb-0 text-truncate">${card.name}</h6>
+            <small class="text-secondary text-xs">${card.position} • <span class="text-warning">${card.stat}</span></small>
+          </div>
+
+          <div class="mt-2">
+            ${opts.isPasted ? `
+              <div class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 w-100 py-2">
+                <i class="fa-solid fa-check me-1"></i> Pegada
+              </div>
+            ` : ''}
+
+            ${opts.canPaste ? `
+              <button onclick="DB.pasteCard(${card.id})" class="btn btn-warning btn-sm w-100 font-bold rounded-3 shadow-sm">
+                <i class="fa-solid fa-glue me-1"></i> Pegar en Álbum
+              </button>
+            ` : ''}
+
+            ${opts.count ? `
+              <small class="text-warning d-block text-center mt-1 text-xs font-semibold">
+                x${opts.count} Disponibles
+              </small>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    /* ==========================================================================
+       6. PACK OPENING ANIMATION SEQUENCE
+       ========================================================================== */
+    let tempPackCards = [];
+
+    function executePackOpening() {
+      if (DB.state.packsCount <= 0) {
+        showToast("¡No tienes sobres suficientes! Intercambia repetidas.", "warning");
+        return;
+      }
+
+      playSound('rip');
+      DB.state.packsCount--;
+      DB.save();
+
+      const pack3d = document.querySelector('.pack-3d');
+      pack3d.classList.add('pack-rip-anim');
+
+      tempPackCards = Array.from({ length: 5 }, () => {
+        const rand = Math.random();
+        let rarity = 'common';
+        if (rand > 0.94) rarity = 'legendary';
+        else if (rand > 0.80) rarity = 'epic';
+        else if (rand > 0.50) rarity = 'rare';
+
+        const pool = STICKERS_DATA.filter(c => c.rarity === rarity);
+        return pool[Math.floor(Math.random() * pool.length)];
+      });
+
+      setTimeout(() => {
+        pack3d.classList.remove('pack-rip-anim');
+        document.getElementById('pack-interactive-zone').classList.add('d-none');
+        
+        const revealedRow = document.getElementById('revealed-cards-row');
+        revealedRow.innerHTML = tempPackCards.map(card => `
+          <div class="col">
+            ${createStickerCardHTML(card, {})}
+          </div>
+        `).join('');
+
+        document.getElementById('pack-revealed-zone').classList.remove('d-none');
+
+        if (tempPackCards.some(c => c.rarity === 'legendary')) {
+          playSound('legendary');
+          confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+        }
+      }, 500);
+    }
+
+    function resetPackZone() {
+      tempPackCards.forEach(c => DB.state.inventory.push(c.id));
+      DB.save();
+
+      showToast("5 figuritas guardadas en tu inventario", "success");
+      tempPackCards = [];
+
+      document.getElementById('pack-interactive-zone').classList.remove('d-none');
+      document.getElementById('pack-revealed-zone').classList.add('d-none');
+    }
+
+    /* ==========================================================================
+       7. TOAST NOTIFICATIONS
+       ========================================================================== */
+    function showToast(message, type = "info") {
+      const toastEl = document.getElementById('action-toast');
+      const icon = document.getElementById('toast-icon');
+      const msgSpan = document.getElementById('toast-message');
+
+      msgSpan.innerText = message;
+
+      if (type === 'success') {
+        icon.className = "fa-solid fa-circle-check text-success";
+      } else if (type === 'warning') {
+        icon.className = "fa-solid fa-triangle-exclamation text-warning";
+      } else {
+        icon.className = "fa-solid fa-circle-info text-primary";
+      }
+
+      const bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
+      bsToast.show();
+    }
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+    });
+  </script>
+</body>
+</html>
