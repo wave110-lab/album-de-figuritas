@@ -6,7 +6,7 @@ Un álbum interactivo de figuritas (cromos/stickers) digitales desarrollado como
 
 ##NOTA CASTII
 Si quieren modificar algo usen gemini, pregunta estupida o compleja no usen otra ia 
-Las modificaciones tardan 1-5 minutos hasta que se actualice el pages pero modifiquen sin miedo 
+-Las modificaciones tardan 1-5 minutos hasta que se actualice el pages pero modifiquen sin miedo 
 ---
 
 ## ✨ Características Principales
