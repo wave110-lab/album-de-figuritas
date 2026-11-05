@@ -2,6 +2,8 @@
 
 Un álbum interactivo de figuritas (cromos/stickers) digitales desarrollado como una aplicación web moderna, estética y responsiva. Ofrece apertura de sobres en 3D, animación de cartas holográficas, sistema de gestión de repetidas y persistencia de datos mediante una base de datos local JSON (`localStorage`).
 
+##NOTA CASTII
+Si quieren modificar algo usen gemini, pregunta estupida o compleja no usen otra ia 
 ---
 
 ## ✨ Características Principales
