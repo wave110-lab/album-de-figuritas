@@ -4,11 +4,6 @@
 
 Un álbum interactivo de figuritas (cromos/stickers) digitales desarrollado como una aplicación web moderna, estética y responsiva. Ofrece apertura de sobres en 3D, animación de cartas holográficas, sistema de gestión de repetidas y persistencia de datos mediante una base de datos local JSON (`localStorage`).
 
-##NOTA CASTII
-Si quieren modificar algo usen gemini, pregunta estupida o compleja no usen otra ia 
--Las modificaciones tardan 1-5 minutos hasta que se actualice el pages pero modifiquen sin miedo 
----
-
 ## ✨ Características Principales
 
 - 🌓 **Diseño Moderno & Bootstrap 5:** Interfaz en modo oscuro/claro con diseño adaptativo (*glassmorphism*) para cualquier dispositivo (móvil, tablet o PC).
